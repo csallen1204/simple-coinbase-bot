@@ -1,6 +1,7 @@
 from coinbase import coinbase
 from dbTransactions import dbTransactions
 import time
+import threading
 
 class baseBot:
 
@@ -30,21 +31,13 @@ class baseBot:
             startTime = endTime - 21000
             candles = candles = self.cb.getCandles(pair,startTime,endTime)
 
-    def getInitialPairs(self):
-        return self.cb.getPairs()
-
-    def refreshPairs(self):
-        pairs = self.cb.getPairs()
-        
+    def getPairDataFrame(self,pair):
         #get 5 days worth of candles
-        for item in pairs:
-            self.buildHistory(item['product_id'])
-
-        #get initial list of candidates, create a dataframe for each pair's candles and look for best opportunities
-        dataframes = []
-        from multiprocessing.dummy import Pool as ThreadPool
-        pool = ThreadPool(16)
-        results = pool.map(my_function, my_array)
+        if self.db.tableExists(pair):
+            self.db.dropTable(pair)
+        self.buildHistory(pair)
+        #create a dataframe for each pair's candles
+        return self.db.tableToDataframe(pair)
 
 def main():
     bot = baseBot()
@@ -52,9 +45,19 @@ def main():
     #loop
     while True:        
         pass
+        #update pairs
+        pairs = bot.cb.getPairs()
+
+        #get 5 days of candles
+        dataframes = {}
+        for pair in pairs:
+            dataframes[pair['product_id']] = bot.getPairDataFrame(pair['product_id'])
+
+        #look at candles
+
         #establish websocket connections for monitoring opportunities
 
-        #create positions for best opportunities
+        #create buy and sell signals
 
         #start monitoring in real-time to look for buy/sell opportunities
 

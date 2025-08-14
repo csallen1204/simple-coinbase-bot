@@ -5,6 +5,12 @@ class dbTransactions:
     def __init__(self):
         pass
 
+    def dropTable(self,pair):
+        con = sqlite3.connect("datasets.db")
+        cur = con.cursor()
+        cur.execute(f"DROP TABLE '{pair}'")
+        con.close()
+
     def tableExists(self,pair):
         con = sqlite3.connect("datasets.db")
         cur = con.cursor()
@@ -46,7 +52,7 @@ class dbTransactions:
         con.close()
         return
 
-    def tableToDataframe(self,pair,days):
+    def tableToDataframe(self,pair,days=5):
         con = sqlite3.connect('datasets.db')
         df = pandas.read_sql_query(f"SELECT * FROM '{pair}' ORDER BY start DESC LIMIT {(1440 * days)}", con)
         df.index = pandas.DatetimeIndex(df['Start'])

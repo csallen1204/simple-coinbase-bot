@@ -97,7 +97,7 @@ class coinbase:
             if pairData[i]['trading_disabled']:
                 continue
             if pairData[i]['quote_display_symbol'] == 'USD' and '-USDC' not in pairData[i]['product_id'] and pairData[i]['volume_24h'] != '':
-                if (float(pairData[i]['volume_24h']) * float(pairData[i]['price'])) > 699999.9:
+                if (float(pairData[i]['volume_24h']) * float(pairData[i]['price'])) > 999999.9:
                     pairList.append(pairData[i])
         return pairList
     
