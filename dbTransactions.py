@@ -46,7 +46,6 @@ class dbTransactions:
         cur.execute(f"CREATE TABLE IF NOT EXISTS '{pair}' (Start INTEGER PRIMARY KEY, Low REAL, High REAL, Open REAL, Close REAL, Volume REAL)")
         
         for candle in candles:
-            print(candle)
             cur.execute(f"INSERT INTO '{pair}' VALUES({candle['start']}, {candle['low']}, {candle['high']}, {candle['open']}, {candle['close']}, {candle['volume']})")
         con.commit()
         con.close()

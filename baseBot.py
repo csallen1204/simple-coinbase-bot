@@ -38,6 +38,23 @@ class baseBot:
         self.buildHistory(pair)
         #create a dataframe for each pair's candles
         return self.db.tableToDataframe(pair)
+    
+    def getTopMovers(self):
+        pairs = self.cb.getPairs()
+
+        for pair in pairs:
+            candles = self.cb.getCandles(pair['product_id'])
+            if len(candles) < 16:
+                continue
+
+            last3MinPriceDiff = float(candles[0]['close']) / float(candles[2]['open'])
+            last3MinVolumeDiff = float(candles[0]['volume']) / float(candles[2]['volume'])
+
+            last15MinPriceDiff = float(candles[0]['close']) / float(candles[14]['open'])
+            last15MinVolumeDiff = float(candles[0]['volume']) / float(candles[14]['volume'])
+
+            if last3MinPriceDiff > 1.01:
+                print(f"PAIR: {pair['product_id']} 3MIN: {last3MinPriceDiff} {last3MinVolumeDiff} 15MIN: {last15MinPriceDiff} {last15MinVolumeDiff}")
 
 def main():
     bot = baseBot()

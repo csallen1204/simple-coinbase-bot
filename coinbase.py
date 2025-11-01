@@ -13,13 +13,14 @@ class coinbase:
         self.ticketCounter = 1
         self.HEADERS = {
             'Content-Type': 'application/json',
-            'cache-control': 'no-cache'
+            #'cache-control': 'no-cache'
         }
         self.COINBASE_DOMAIN = "api.coinbase.com"
         self.COINBASE_API_PATH = "/api/v3/brokerage/"
         self.API_KEY=os.environ['COINBASE_API_KEY']
         self.API_SECRET=os.environ['COINBASE_API_SECRET']
-        self.WAIT_INTERVAL = .28
+        #self.WAIT_INTERVAL = .28
+        self.WAIT_INTERVAL = .001
         self.requestQueue = []
         self.responseQueue = []
         self.requestController = threading.Thread(target=self.procesRequestQueue)
@@ -96,9 +97,8 @@ class coinbase:
         for i in range(0,len(pairData)):
             if pairData[i]['trading_disabled']:
                 continue
-            if pairData[i]['quote_display_symbol'] == 'USD' and '-USDC' not in pairData[i]['product_id'] and pairData[i]['volume_24h'] != '':
-                if (float(pairData[i]['volume_24h']) * float(pairData[i]['price'])) > 999999.9:
-                    pairList.append(pairData[i])
+            if pairData[i]['quote_display_symbol'] == 'USD' and 'USDC' not in pairData[i]['product_id'] and pairData[i]['volume_24h'] != '':
+                pairList.append(pairData[i])
         return pairList
     
     def getCandles(self,pair,start=((int(time.time()))-21000),end=(int(time.time()))):
